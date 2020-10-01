@@ -2,7 +2,7 @@
 //https://cowork-paris.000webhostapp.com/index.php/item
 require APPPATH . 'libraries/REST_Controller.php';
      
-class ReservationPrivateSpace extends REST_Controller {
+class ReservationEquipment extends REST_Controller {
     
       /**
      * Get All Data from this method.
@@ -22,9 +22,9 @@ class ReservationPrivateSpace extends REST_Controller {
     public function index_get($id = 0)
     {
         if(!empty($id)){
-            $data = $this->db->get_where("reservation_espace_privatif", ['id' => $id])->row_array();
+            $data = $this->db->get_where("reservation_equipment", ['id' => $id])->row_array();
         }else{
-            $data = $this->db->get("reservation_espace_privatif")->result();
+            $data = $this->db->get("reservation_equipment")->result();
         }
      
         $this->response($data, REST_Controller::HTTP_OK);
@@ -39,7 +39,7 @@ class ReservationPrivateSpace extends REST_Controller {
     {
         $input = $this->input->post();
         $this->db->set($input);
-        $this->db->insert('reservation_espace_privatif', $input);
+        $this->db->insert('reservation_equipment', $input);
      
         $this->response(['Reservation created successfully.'], REST_Controller::HTTP_OK);
     } 
@@ -53,7 +53,7 @@ class ReservationPrivateSpace extends REST_Controller {
     {
         
         $input = $this->input->post();
-        $this->db->update('reservation_espace_privatif', $input, array('id'=>$id));
+        $this->db->update('reservation_equipment', $input, array('id'=>$id));
      
         $this->response(['Reservation updated successfully.'], REST_Controller::HTTP_OK);
     }
@@ -65,7 +65,7 @@ class ReservationPrivateSpace extends REST_Controller {
     */
     public function index_delete($id)
     {
-        $this->db->delete('reservation_espace_privatif', array('id'=>$id));
+        $this->db->delete('reservation_equipment', array('id'=>$id));
        
         $this->response(['Reservation deleted successfully.'], REST_Controller::HTTP_OK);
     }
