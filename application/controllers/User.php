@@ -49,6 +49,22 @@ class User extends REST_Controller {
         $this->response($data, REST_Controller::HTTP_OK);
     }
 
+    public function equipment_get($id = 0) {
+        if(!empty($id)){
+            $data = $this->db->get_where("reservation_equipment", ['id_user' => $id])->result_array();
+        }
+     
+        $this->response($data, REST_Controller::HTTP_OK);
+    }
+
+    public function meal_get($id = 0) {
+        if(!empty($id)){
+            $data = $this->db->get_where("reservation_meal", ['id_user' => $id])->result_array();
+        }
+     
+        $this->response($data, REST_Controller::HTTP_OK);
+    }
+
     /**
      * Get All Data from this method.
      *
