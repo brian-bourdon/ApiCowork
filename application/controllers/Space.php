@@ -11,6 +11,7 @@ class Space extends REST_Controller {
     public function __construct() {
         parent::__construct();
         $this->load->database();
+        $this->load->model('Space_model');
     }
 
     /**
@@ -21,11 +22,10 @@ class Space extends REST_Controller {
     public function index_get($id = 0)
     {
         if(!empty($id)){
-            $data = $this->db->get_where("space", ['id' => $id])->row_array();
+            $data = $this->Space_model->get_space_by_id($id)->row_array();
         }else{
-            $data = $this->db->get("space")->result();
+            $data = $this->Space_model->get_all_space()->result_array();
         }
-     
         $this->response($data, REST_Controller::HTTP_OK);
     }
 }

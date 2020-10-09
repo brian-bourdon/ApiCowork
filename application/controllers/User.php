@@ -12,6 +12,8 @@ class User extends REST_Controller {
     public function __construct() {
        parent::__construct();
        $this->load->database();
+       $this->load->model('User_model');
+       
     }
        
     /**
@@ -22,55 +24,72 @@ class User extends REST_Controller {
     public function index_get($id = 0)
     {
         if(!empty($id)){
-            $data = $this->db->get_where("user", ['id' => $id])->row_array();
+            $data = $this->User_model->get_user_by_id($id)->row_array();
         }else{
-            $data = $this->db->get("user")->result();
+            $data = $this->User_model->get_all_user()->result_array();
         }
-     
         $this->response($data, REST_Controller::HTTP_OK);
     }
     
     public function show_get($mail = "")
     {
         if(!empty($mail)){
-            $data = $this->db->get_where("user", ['email' => $mail])->result_array();
+            $data = $this->User_model->get_user_by_mail($mail)->row_array();
+            $this->response($data, REST_Controller::HTTP_OK);
         }else{
-            $data = [];
+            $this->response([
+                'status' => FALSE,
+                'message' => 'No users were found'
+            ], REST_Controller::HTTP_NOT_FOUND);
         }
-     
-        $this->response($data, REST_Controller::HTTP_OK);
     }
 
     public function privative_get($id = 0) {
         if(!empty($id)){
-            $data = $this->db->get_where("reservation_espace_privatif", ['id_user' => $id])->result_array();
+            $data = $this->User_model->get_privative_reservation($id)->result_array();
+            $this->response($data, REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => FALSE,
+                'message' => 'No users were found'
+            ], REST_Controller::HTTP_NOT_FOUND);
         }
-     
-        $this->response($data, REST_Controller::HTTP_OK);
     }
 
     public function equipment_get($id = 0) {
         if(!empty($id)){
-            $data = $this->db->get_where("reservation_equipment", ['id_user' => $id])->result_array();
+            $data = $this->User_model->get_equipment_reservation($id)->result_array();
+            $this->response($data, REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => FALSE,
+                'message' => 'No users were found'
+            ], REST_Controller::HTTP_NOT_FOUND);
         }
-     
-        $this->response($data, REST_Controller::HTTP_OK);
     }
 
     public function meal_get($id = 0) {
         if(!empty($id)){
-            $data = $this->db->get_where("reservation_meal", ['id_user' => $id])->result_array();
+            $data = $this->User_model->get_meal_reservation($id)->result_array();
+            $this->response($data, REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => FALSE,
+                'message' => 'No users were found'
+            ], REST_Controller::HTTP_NOT_FOUND);
         }
-     
-        $this->response($data, REST_Controller::HTTP_OK);
     }
 
     public function events_get($id = 0) {
         if(!empty($id)){
-            $data = $this->db->get_where("reservation_events", ['id_user' => $id])->result_array();
+            $data = $this->User_model->get_events($id)->result_array();
+            $this->response($data, REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => FALSE,
+                'message' => 'No users were found'
+            ], REST_Controller::HTTP_NOT_FOUND);
         }
-     
-        $this->response($data, REST_Controller::HTTP_OK);
     }
 
     /**
@@ -81,10 +100,10 @@ class User extends REST_Controller {
     public function index_post()
     {
         $input = $this->input->post();
-        $this->db->set($input);
-        $this->db->insert('user', $input);
+        $res = $this->User_model->insert_user($input);
      
-        $this->response(['User created successfully.'], REST_Controller::HTTP_OK);
+        if($res) $this->response(['User created successfully.'], REST_Controller::HTTP_OK);
+        else $this->response(NULL, REST_Controller::HTTP_BAD_REQUEST);
     } 
      
     /**
@@ -94,11 +113,11 @@ class User extends REST_Controller {
     */
     public function update_post($id)
     {
-        
         $input = $this->input->post();
-        $this->db->update('user', $input, array('id'=>$id));
+        $res = $this->User_model->update_user($id, $input);
      
-        $this->response(['User updated successfully.'], REST_Controller::HTTP_OK);
+        if($res) $this->response(['User updated successfully.'], REST_Controller::HTTP_OK);
+        else $this->response(NULL, REST_Controller::HTTP_BAD_REQUEST);
     }
      
     /**
@@ -106,11 +125,16 @@ class User extends REST_Controller {
      *
      * @return Response
     */
-    public function index_delete($id)
+    public function index_delete($id = 0)
     {
-        $this->db->delete('user', array('id'=>$id));
-       
-        $this->response(['User deleted successfully.'], REST_Controller::HTTP_OK);
+        if(!empty($id)) {
+            $res = $this->User_model->delete_user($id);
+            if($res) $this->response(['User deleted successfully.'], REST_Controller::HTTP_OK);
+            else $this->response(NULL, REST_Controller::HTTP_BAD_REQUEST);
+        }
+        else $this->response([
+            'status' => FALSE,
+            'message' => 'No users were found'
+            ], REST_Controller::HTTP_NOT_FOUND);
     }
-        
 }
