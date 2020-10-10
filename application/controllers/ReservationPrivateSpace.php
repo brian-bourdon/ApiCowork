@@ -69,8 +69,30 @@ class ReservationPrivateSpace extends REST_Controller {
             $horaire_debut = str_replace("+", " ", $horaire_debut);
             $horaire_fin = str_replace("+", " ", $horaire_fin);
             $res = $this->ReservationPrivateSpace_model->is_disponible($id_space, $horaire_debut, $horaire_fin)->result_array();
-            count($res) == 0 ? $response = true : $response = false;
-            $this->response([$response], REST_Controller::HTTP_OK);
+            $hd = new DateTime($horaire_debut);
+            $hf = new DateTime($horaire_fin);
+            $interval = $hd->diff($hf)->format("%r%h");
+            $response = array();
+            if(count($res) == 0) {
+                if($hd->format("Y-m-d") == $hf->format("Y-m-d")) {
+                    if((int)$interval >= 1) {
+                        $response["status"] = true;
+                        $response["msg"] = "Creneau disponible";
+                    }
+                    else {
+                        $response["status"] = false;
+                        $response["msg"] = "Le créneau doit être au moins d'une heure !";
+                    }
+                } else {
+                    $response["status"] = false;
+                    $response["msg"] = "Il est impossible de réserver sur plusieurs jours !";
+                }
+            }
+            else {
+                $response["status"] = false;
+                $response["msg"] = "L'espace n'est pas disponlible pour ces horaires !";
+            }
+            $this->response($response, REST_Controller::HTTP_OK);
         }
         else $this->response([
             'status' => FALSE,

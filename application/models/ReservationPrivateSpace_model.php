@@ -39,7 +39,7 @@ class ReservationPrivateSpace_model extends CI_Model {
         if(isset($input["horaire_debut"], $input["horaire_fin"], $input["id_espace_privatif"], $input["id_user"])) {
             $hd = new DateTime($input["horaire_debut"]);
             $hf = new DateTime($input["horaire_fin"]);
-            $interval = $hf->diff($hd)->format("%h");
+            $interval = $hd->diff($hf)->format("%r%h");
             if(count($this->is_disponible($input["id_espace_privatif"], $input["horaire_debut"], $input["horaire_fin"])->result_array()) == 0 && ($hd->format("Y-m-d") == $hf->format("Y-m-d")) && ((int)$interval >= 1)) {
                 $data = array(
                     'horaire_debut' => $input["horaire_debut"],
