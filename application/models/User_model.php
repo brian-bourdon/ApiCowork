@@ -53,6 +53,7 @@ class User_model extends CI_Model {
     }
 
     public function insert_user($user) {
+        $res = true;
         if(isset($user["firstname"], $user["lastname"], $user["date_naissance"], $user["email"], $user["pwd"])) {
             if(count($this->get_user_by_mail($user["email"])->result_array()) == 0) {
                 $data = array(
@@ -62,13 +63,16 @@ class User_model extends CI_Model {
                     'email' => $user["email"],
                     'pwd' => $user["pwd"]
                 );
-                if(isset($user["id_abonnement"])) $data["id_abonnement"] = $user["id_abonnement"];
                 $this->db->set($data);
-                $res = $this->db->insert($this->table, $data);
+                $res &= $this->db->insert($this->table, $data);
+                if(isset($user["id_abonnement"]) && !empty($user["id_abonnement"])) {
+                    $this->load->model('ResAbonnement_model');
+                    $res &= $this->ResAbonnement_model->insert(array("id_abonnement" => $user["id_abonnement"], "id_user" => $this->db->insert_id()));
+                }
                 //$idUser = $this->db->insert_id();
-            }else $res = false;
-        } else{
-            $res = false;
+            }else $res &= false;
+        } else {
+            $res &= false;
         }
         return $res;
     }

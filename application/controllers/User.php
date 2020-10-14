@@ -13,6 +13,7 @@ class User extends REST_Controller {
        parent::__construct();
        $this->load->database();
        $this->load->model('User_model');
+       $this->load->model('ResAbonnement_model');
        
     }
        
@@ -136,5 +137,18 @@ class User extends REST_Controller {
             'status' => FALSE,
             'message' => 'No users were found'
             ], REST_Controller::HTTP_NOT_FOUND);
+    }
+
+    public function abonnement_get($id = 0) {
+        if(!empty($id)){
+            $data = $this->ResAbonnement_model->get_by_user($id)->row_array();
+            if(empty($data)) $data = null;
+            $this->response($data, REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => FALSE,
+                'message' => 'No users were found'
+            ], REST_Controller::HTTP_NOT_FOUND);
+        }
     }
 }
