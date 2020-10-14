@@ -141,8 +141,7 @@ class User extends REST_Controller {
 
     public function abonnement_get($id = 0) {
         if(!empty($id)){
-            $data = $this->ResAbonnement_model->get_by_user($id)->row_array();
-            if(empty($data)) $data = null;
+            $data = $this->ResAbonnement_model->get_by_user($id)->result_array();
             $this->response($data, REST_Controller::HTTP_OK);
         }else{
             $this->response([
