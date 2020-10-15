@@ -78,9 +78,17 @@ class User_model extends CI_Model {
     }
 
     public function update_user($id, $user) {
+        $res = true;
         if(isset($user["firstname"]) || isset($user["lastname"]) || isset($user["date_naissance"]) || isset($user["email"]) || isset($user["pwd"]) || isset($user["id_abonnement"])) {
-            $res = $this->db->update('user', $user, array('id'=>$id));
-        }else $res = false;
+            if(count($this->get_user_by_id($id)->result_array()) == 1) {
+                if(isset($user["id_abonnement"])) {
+                    $res &= $this->ResAbonnement_model->insert(array("id_abonnement" => $user["id_abonnement"], "id_user" => $id));
+                    unset($user["id_abonnement"]);
+                }
+                if(!empty($user)) $res &= $this->db->update('user', $user, array('id'=>$id));
+            } else $res &= false;
+            
+        }else $res &= false;
         return $res;
     }
 
