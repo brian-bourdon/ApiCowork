@@ -16,6 +16,13 @@ class Space_model extends CI_Model {
                         ->where('id', $id)
                         ->get();
     }
+
+    public function get_horaires($id) {
+        return $this->db->select('*')
+                        ->from("horaires_space")
+                        ->where('id_space', $id)
+                        ->get();
+    }
 }
 
 ?>

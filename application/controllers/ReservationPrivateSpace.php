@@ -13,6 +13,7 @@ class ReservationPrivateSpace extends REST_Controller {
        parent::__construct();
        $this->load->database();
        $this->load->model('ReservationPrivateSpace_model');
+       $this->load->model('Space_model');
     }
        
     /**
@@ -64,20 +65,31 @@ class ReservationPrivateSpace extends REST_Controller {
      *
      * @return Response
     */
-    public function disponible_get($id_space = 0, $horaire_debut = "", $horaire_fin = "") {
-        if(!empty($id_space) && !empty($horaire_debut)) {
+    public function disponible_get($id_privative_space = 0, $horaire_debut = "", $horaire_fin = "") {
+        if(!empty($id_privative_space) && !empty($horaire_debut)) {
             $horaire_debut = str_replace("+", " ", $horaire_debut);
             $horaire_fin = str_replace("+", " ", $horaire_fin);
-            $res = $this->ReservationPrivateSpace_model->is_disponible($id_space, $horaire_debut, $horaire_fin)->result_array();
+            $id_space = $this->ReservationPrivateSpace_model->get_space_by_privative_space_id($id_privative_space)->row_array()["id_space"];
+            $res = $this->ReservationPrivateSpace_model->is_disponible($id_privative_space, $horaire_debut, $horaire_fin)->result_array();
+            $horaires_space = $this->Space_model->get_horaires($id_space)->row_array();
             $hd = new DateTime($horaire_debut);
             $hf = new DateTime($horaire_fin);
             $interval = $hd->diff($hf)->format("%r%h");
             $response = array();
+            
             if(count($res) == 0) {
                 if($hd->format("Y-m-d") == $hf->format("Y-m-d")) {
                     if((int)$interval >= 1) {
-                        $response["status"] = true;
-                        $response["msg"] = "Creneau disponible";
+                        if($hd->format('L') <= 4) $week_type = "horaire_semaine_";
+                        else if($hd->format('L') == 5) $week_type = "horaire_vendredi_";
+                        else $week_type = "horaire_week_end_";
+                        if($hd->format('H:i:s') >= $horaires_space[$week_type."start"] && $hf->format('H:i:s') <= $horaires_space[$week_type."end"]) {
+                            $response["status"] = true;
+                            $response["msg"] = "Creneau disponible";
+                        }else {
+                            $response["status"] = false;
+                            $response["msg"] = "Le ".$this->Space_model->get_space_by_id($id_space)->row_array()["nom"]." n'est pas ouvert à ces horaires !";
+                        }
                     }
                     else {
                         $response["status"] = false;
@@ -96,9 +108,20 @@ class ReservationPrivateSpace extends REST_Controller {
         }
         else $this->response([
             'status' => FALSE,
-            'message' => 'No users were found'
+            'message' => '404 NOT FOUND'
             ], REST_Controller::HTTP_NOT_FOUND);
         }
+
+    public function reservationByPrivateSpace_get($id_espace_privatif = 0, $formDate = 0) {
+        if(!empty($id_espace_privatif) && !empty($formDate)) {
+            $data = $this->ReservationPrivateSpace_model->get_reservation_by_privative_space($id_espace_privatif, $formDate)->result_array();
+            $this->response($data, REST_Controller::HTTP_OK);
+        }
+        else $this->response([
+            'status' => FALSE,
+            'message' => '404 NOT FOUND'
+            ], REST_Controller::HTTP_NOT_FOUND);
+    }
 
     public function index_delete($id = 0)
     {

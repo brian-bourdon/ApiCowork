@@ -17,6 +17,13 @@ class ReservationPrivateSpace_model extends CI_Model {
                         ->get();
     }
 
+    public function get_space_by_privative_space_id($id) {
+        return $this->db->select('*')
+                        ->from("espace_privatif")
+                        ->where('id', $id)
+                        ->get();
+    }
+
     public function get_by_user($id) {
         return $this->db->select('*')
                         ->from($this->table)
@@ -55,6 +62,14 @@ class ReservationPrivateSpace_model extends CI_Model {
             $res = false;
         }
         return $res;
+    }
+
+    public function get_reservation_by_privative_space($id_espace_privatif, $formDate) {
+        return $this->db->select("horaire_debut, horaire_fin")
+                        ->from($this->table)
+                        ->where('id_espace_privatif', $id_espace_privatif)
+                        ->where("DATE_FORMAT(horaire_debut,'%Y-%m-%d') =", $formDate)
+                        ->get();
     }
 
     public function delete_user($id) {

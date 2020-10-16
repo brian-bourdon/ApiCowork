@@ -28,4 +28,18 @@ class Space extends REST_Controller {
         }
         $this->response($data, REST_Controller::HTTP_OK);
     }
+
+    public function horaires_get($id = 0)
+    {
+        if(!empty($id)){
+            $data = $this->Space_model->get_horaires($id)->row_array();
+            $this->response($data, REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => FALSE,
+                'message' => 'No users were found'
+            ], REST_Controller::HTTP_NOT_FOUND);
+        }
+    }
+
 }
