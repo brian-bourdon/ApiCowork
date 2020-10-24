@@ -123,7 +123,7 @@ class ReservationPrivateSpace extends REST_Controller {
             ], REST_Controller::HTTP_NOT_FOUND);
     }
 
-    public function index_delete($id = 0)
+    public function delete_get($id = 0)
     {
         if(!empty($id)) {
             $res = $this->ReservationPrivateSpace_model->delete_user($id);
