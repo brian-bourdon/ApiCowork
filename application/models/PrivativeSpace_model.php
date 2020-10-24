@@ -1,30 +1,23 @@
 <?php
 
-class Space_model extends CI_Model {
+class PrivativeSpace_model extends CI_Model {
 
-    private $table = 'space';
+    private $table = 'espace_privatif';
 
-    public function get_all_space() {
+    public function get_all() {
         return $this->db->select('*')
                         ->from($this->table)
                         ->get();
     }
 
-    public function get_space_by_id($id) {
+    public function get_by_id($id) {
         return $this->db->select('*')
                         ->from($this->table)
                         ->where('id', $id)
                         ->get();
     }
 
-    public function get_horaires($id) {
-        return $this->db->select('*')
-                        ->from("horaires_space")
-                        ->where('id_space', $id)
-                        ->get();
-    }
-
-    public function update_space($id, $space) {
+    public function update_privative_space($id, $space) {
         return $this->db->update($this->table, $space, array('id'=>$id));
     }
 

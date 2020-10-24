@@ -12,6 +12,7 @@ class Equipment extends REST_Controller {
     public function __construct() {
        parent::__construct();
        $this->load->database();
+       $this->load->model('Equipment_model');
     }
        
     /**
@@ -22,11 +23,29 @@ class Equipment extends REST_Controller {
     public function index_get($id = 0)
     {
         if(!empty($id)){
-            $data = $this->db->get_where("equipment", ['id_space' => $id])->result_array();
+            $data = $this->Equipment_model->get_by_id($id)->row_array();
         }else{
-            $data = $this->db->get("equipment")->result();
+            $data =  $data = $this->Equipment_model->get_all()->result_array();
         }
      
         $this->response($data, REST_Controller::HTTP_OK);
+    }
+
+    public function index_post()
+    {
+        $input = $this->input->post();
+        $res = $this->Equipment_model->insert($input);
+     
+        if($res) $this->response(['Created successfully.'], REST_Controller::HTTP_OK);
+        else $this->response(NULL, REST_Controller::HTTP_BAD_REQUEST);
+    }
+
+    public function update_post($id)
+    {
+        $input = $this->input->post();
+        $res = $this->Equipment_model->update($id, $input);
+
+        if($res) $this->response(['User updated successfully.'], REST_Controller::HTTP_OK);
+        else $this->response(NULL, REST_Controller::HTTP_BAD_REQUEST);
     }
 }
