@@ -31,6 +31,16 @@ class Equipment extends REST_Controller {
         $this->response($data, REST_Controller::HTTP_OK);
     }
 
+    public function space_get($id = 0)
+    {
+        if(!empty($id)){
+            $data = $this->Equipment_model->get_by_space($id)->result_array();
+            $this->response($data, REST_Controller::HTTP_OK);
+        }
+        else $this->response($data, REST_Controller::HTTP_OK);
+    }
+
+
     public function index_post()
     {
         $input = $this->input->post();

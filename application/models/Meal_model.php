@@ -17,6 +17,13 @@ class Meal_model extends CI_Model {
                         ->get();
     }
 
+    public function get_by_space($id) {
+        return $this->db->select('*')
+                        ->from($this->table)
+                        ->where('id_space', $id)
+                        ->get();
+    }
+
     public function update($id, $space) {
         return $this->db->update($this->table, $space, array('id'=>$id));
     }
