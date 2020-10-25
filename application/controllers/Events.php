@@ -23,7 +23,7 @@ class Events extends REST_Controller {
     public function index_get($id = 0)
     {
         if(!empty($id)){
-            $data = $this->Events_model->get_by_id($id)->roww_array();
+            $data = $this->Events_model->get_by_id($id)->row_array();
         }else{
             $data = $this->Events_model->get_all()->result_array();
         }
