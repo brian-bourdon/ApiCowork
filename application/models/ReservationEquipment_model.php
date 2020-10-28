@@ -38,9 +38,6 @@ class ReservationEquipment_model extends CI_Model {
             $hf = new DateTime($input["horaire_fin"]);
             $interval_hours = $hd->diff($hf)->format("%r%h");
             $interval_days = $hd->diff($hf)->format("%r%a");
-            //echo $interval_days;
-            //echo $interval_hours;
-            echo count($this->is_disponible($input["id_equipment"], $input["horaire_debut"], $input["horaire_fin"])->result_array());
             if(count($this->is_disponible($input["id_equipment"], $input["horaire_debut"], $input["horaire_fin"])->result_array()) == 0 && (int)$interval_days <= 7 && ((int)$interval_hours >= 1)) {
                 $data = array(
                     'horaire_debut' => $input["horaire_debut"],
@@ -49,7 +46,7 @@ class ReservationEquipment_model extends CI_Model {
                     'id_user' => $input["id_user"]
                 );
                 $this->db->set($data);
-                //$res = $this->db->insert($this->table, $data);
+                $res = $this->db->insert($this->table, $data);
                 //$idUser = $this->db->insert_id();
             }else $res = false;
         } else{

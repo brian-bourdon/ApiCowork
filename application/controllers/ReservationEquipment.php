@@ -42,9 +42,8 @@ class ReservationEquipment extends REST_Controller {
         $input = $this->input->post();
         $this->db->set($input);
         $res = $this->ReservationEquipment_model->insert($input);
-        print_r($res);
-        //if($res) $this->response(['Reservation created successfully.'], REST_Controller::HTTP_OK);
-        //else $this->response(NULL, REST_Controller::HTTP_BAD_REQUEST);
+        if($res) $this->response(['Reservation created successfully.'], REST_Controller::HTTP_OK);
+        else $this->response(NULL, REST_Controller::HTTP_BAD_REQUEST);
     } 
      
     /**
