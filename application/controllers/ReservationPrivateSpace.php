@@ -77,13 +77,13 @@ class ReservationPrivateSpace extends REST_Controller {
             $interval = $hd->diff($hf)->format("%r%h");
             $response = array();
             
-            if(count($res) == 0) {
-                if($hd->format("Y-m-d") == $hf->format("Y-m-d")) {
-                    if((int)$interval >= 1) {
+            if(count($res) == 0) { // si dispo
+                if($hd->format("Y-m-d") == $hf->format("Y-m-d")) { // meme jour
+                    if((int)$interval >= 1) { // au moins 1h de diff
                         if($hd->format('L') <= 4) $week_type = "horaire_semaine_";
                         else if($hd->format('L') == 5) $week_type = "horaire_vendredi_";
                         else $week_type = "horaire_week_end_";
-                        if($hd->format('H:i:s') >= $horaires_space[$week_type."start"] && $hf->format('H:i:s') <= $horaires_space[$week_type."end"]) {
+                        if($hd->format('H:i:s') >= $horaires_space[$week_type."start"] && $hf->format('H:i:s') <= $horaires_space[$week_type."end"]) { // si ouvert
                             $response["status"] = true;
                             $response["msg"] = "Creneau disponible";
                         }else {

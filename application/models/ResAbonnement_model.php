@@ -5,6 +5,8 @@ class ResAbonnement_model extends CI_Model {
     private $table = 'res_abonnement';
 
     public function insert($data) {
+        $now = new DateTime();
+        $data["created_at"] = $now->format("Y-m-d H:i:s");
         return $this->db->insert($this->table, $data);
     }
 
