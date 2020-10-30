@@ -14,6 +14,7 @@ class ReservationEquipment extends REST_Controller {
        $this->load->database();
        $this->load->model('ReservationEquipment_model');
        $this->load->model('Space_model');
+       $this->load->model('Equipment_model');
     }
        
     /**
@@ -57,7 +58,7 @@ class ReservationEquipment extends REST_Controller {
         $input = $this->input->post();
         $this->db->update('reservation_equipment', $input, array('id'=>$id));
      
-        $this->response(['Reservation updated successfully.'], REST_Controller::HTTP_OK);
+        $this->response(['User updated successfully.'], REST_Controller::HTTP_OK);
     }
      
     /**
@@ -116,7 +117,7 @@ class ReservationEquipment extends REST_Controller {
             $this->response($response, REST_Controller::HTTP_OK);
         }
         else $this->response([
-            'status' => FALSE,
+            'status' => false,
             'message' => '404 NOT FOUND'
             ], REST_Controller::HTTP_NOT_FOUND);
     }
@@ -129,6 +130,21 @@ class ReservationEquipment extends REST_Controller {
         else $this->response([
             'status' => FALSE,
             'message' => '404 NOT FOUND'
+            ], REST_Controller::HTTP_NOT_FOUND);
+    }
+
+    public function equipment_get($id_equipment = 0) {
+        if(!empty($id_equipment)) {
+            $id_space = $this->Equipment_model->get_by_id($id_equipment)->row();
+            if(!empty($id_space)) {
+                $res = $this->Equipment_model->get_by_space($id_space->id_space)->result_array();
+                if($res) $this->response($res, REST_Controller::HTTP_OK);
+                else $this->response(array(), REST_Controller::HTTP_BAD_REQUEST);
+            } else $this->response(array(), REST_Controller::HTTP_OK);
+        }
+        else $this->response([
+            'status' => FALSE,
+            'message' => 'No equipment found'
             ], REST_Controller::HTTP_NOT_FOUND);
     }
         

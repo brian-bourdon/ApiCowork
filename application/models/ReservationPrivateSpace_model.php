@@ -76,6 +76,10 @@ class ReservationPrivateSpace_model extends CI_Model {
         return $this->db->delete($this->table, array('id'=>$id));
     }
 
+    public function update($id, $equipment) {
+        return $this->db->update($this->table, $equipment, array('id'=>$id));
+    }
+
 }
 
 ?>

@@ -12,6 +12,7 @@ class ReservationMeal extends REST_Controller {
     public function __construct() {
        parent::__construct();
        $this->load->database();
+       $this->load->model('Meal_model');
     }
        
     /**
@@ -68,6 +69,21 @@ class ReservationMeal extends REST_Controller {
         $this->db->delete('reservation_meal', array('id'=>$id));
        
         $this->response(['Reservation deleted successfully.'], REST_Controller::HTTP_OK);
+    }
+
+    public function meal_get($id_meal = 0) {
+        if(!empty($id_meal)) {
+            $id_space = $this->Meal_model->get_by_id($id_meal)->row();
+            if(!empty($id_space)) {
+                $res = $this->Meal_model->get_by_space($id_space->id_space)->result_array();
+                if($res) $this->response($res, REST_Controller::HTTP_OK);
+                else $this->response(array(), REST_Controller::HTTP_BAD_REQUEST);
+            } else $this->response(array(), REST_Controller::HTTP_OK);
+        }
+        else $this->response([
+            'status' => FALSE,
+            'message' => 'No equipment found'
+            ], REST_Controller::HTTP_NOT_FOUND);
     }
         
 }

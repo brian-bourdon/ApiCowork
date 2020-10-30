@@ -12,6 +12,7 @@ class ReservationEvents extends REST_Controller {
     public function __construct() {
        parent::__construct();
        $this->load->database();
+       $this->load->model('Events_model');
     }
        
     /**
@@ -86,5 +87,20 @@ class ReservationEvents extends REST_Controller {
             $data = $this->db->count_all_results();
             $this->response($data, REST_Controller::HTTP_OK);
         }
+    }
+
+    public function events_get($id_events = 0) {
+        if(!empty($id_events)) {
+            $id_space = $this->Events_model->get_by_id($id_events)->row();
+            if(!empty($id_space)) {
+                $res = $this->Events_model->get_by_space($id_space->id_space)->result_array();
+                if($res) $this->response($res, REST_Controller::HTTP_OK);
+                else $this->response(array(), REST_Controller::HTTP_BAD_REQUEST);
+            } else $this->response(array(), REST_Controller::HTTP_OK);
+        }
+        else $this->response([
+            'status' => FALSE,
+            'message' => 'No equipment found'
+            ], REST_Controller::HTTP_NOT_FOUND);
     }
 }

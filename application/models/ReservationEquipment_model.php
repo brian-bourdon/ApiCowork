@@ -19,7 +19,7 @@ class ReservationEquipment_model extends CI_Model {
                         ->where('id_equipment', $id_equipment)
                         ->where('horaire_fin >', $hd->format("Y-m-d H:i"))
                         ->where('horaire_debut <', $hf->format("Y-m-d H:i"))
-                        ->where('rendu', 'no')
+                        ->where('rendu', 'non')
                         ->get();
     }
 
@@ -28,7 +28,7 @@ class ReservationEquipment_model extends CI_Model {
                         ->from($this->table)
                         ->where('id_equipment', $id_equipment)
                         ->where("DATE_FORMAT(horaire_debut,'%Y-%m-%d') =", $formDate)
-                        ->where("rendu", "no")
+                        ->where("rendu", "non")
                         ->get();
     }
 

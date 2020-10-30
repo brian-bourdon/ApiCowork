@@ -14,6 +14,7 @@ class ReservationPrivateSpace extends REST_Controller {
        $this->load->database();
        $this->load->model('ReservationPrivateSpace_model');
        $this->load->model('Space_model');
+       $this->load->model('PrivativeSpace_model');
     }
        
     /**
@@ -44,7 +45,16 @@ class ReservationPrivateSpace extends REST_Controller {
      
         if($res) $this->response(['Reservation created successfully.'], REST_Controller::HTTP_OK);
         else $this->response(NULL, REST_Controller::HTTP_BAD_REQUEST);
-    } 
+    }
+
+    public function update_post($id)
+    {
+        $input = $this->input->post();
+        $res = $this->ReservationPrivateSpace_model->update($id, $input);
+
+        if($res) $this->response(['User updated successfully.'], REST_Controller::HTTP_OK);
+        else $this->response(NULL, REST_Controller::HTTP_BAD_REQUEST);
+    }
      
     /**
      * Get All Data from this method.
@@ -133,6 +143,21 @@ class ReservationPrivateSpace extends REST_Controller {
         else $this->response([
             'status' => FALSE,
             'message' => 'No users were found'
+            ], REST_Controller::HTTP_NOT_FOUND);
+    }
+
+    public function privateSpace_get($id_privative = 0) {
+        if(!empty($id_privative)) {
+            $id_space = $this->PrivativeSpace_model->get_by_id($id_privative)->row();
+            if(!empty($id_space)) {
+                $res = $this->PrivativeSpace_model->get_by_space($id_space->id_space)->result_array();
+                if($res) $this->response($res, REST_Controller::HTTP_OK);
+                else $this->response(array(), REST_Controller::HTTP_BAD_REQUEST);
+            } else $this->response(array(), REST_Controller::HTTP_OK);
+        }
+        else $this->response([
+            'status' => FALSE,
+            'message' => 'No privative space found'
             ], REST_Controller::HTTP_NOT_FOUND);
     }
         
