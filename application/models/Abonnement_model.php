@@ -16,4 +16,8 @@ class Abonnement_model extends CI_Model {
                         ->where('id', $id)
                         ->get();
     }
+
+    public function delete($id) {
+        return $this->db->delete($this->table, array('id'=>$id));
+    }
 }

@@ -30,4 +30,17 @@ class Abonnement extends REST_Controller {
         $this->response($data, REST_Controller::HTTP_OK);
     }
 
+    public function delete_get($id = 0)
+    {
+        if(!empty($id)) {
+            $res = $this->Abonnement_model->delete($id);
+            if($res) $this->response(['Reservation deleted successfully.'], REST_Controller::HTTP_OK);
+            else $this->response(NULL, REST_Controller::HTTP_BAD_REQUEST);
+        }
+        else $this->response([
+            'status' => FALSE,
+            'message' => 'No users were found'
+            ], REST_Controller::HTTP_NOT_FOUND);
+    }
+
 }

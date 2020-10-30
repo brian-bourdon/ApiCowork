@@ -33,4 +33,8 @@ class ResAbonnement_model extends CI_Model {
     public function delete($id) {
         return $this->db->delete($this->table, array('id'=>$id));
     }
+
+    public function update($id, $data) {
+        return $this->db->update($this->table, $data, array('id'=>$id));
+    }
 }

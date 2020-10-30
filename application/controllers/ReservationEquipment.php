@@ -147,5 +147,18 @@ class ReservationEquipment extends REST_Controller {
             'message' => 'No equipment found'
             ], REST_Controller::HTTP_NOT_FOUND);
     }
+
+    public function delete_get($id = 0)
+    {
+        if(!empty($id)) {
+            $res = $this->ReservationEquipment_model->delete($id);
+            if($res) $this->response(['Reservation deleted successfully.'], REST_Controller::HTTP_OK);
+            else $this->response(NULL, REST_Controller::HTTP_BAD_REQUEST);
+        }
+        else $this->response([
+            'status' => FALSE,
+            'message' => 'No users were found'
+            ], REST_Controller::HTTP_NOT_FOUND);
+    }
         
 }

@@ -48,4 +48,14 @@ class Events extends REST_Controller {
         if($res) $this->response(['User updated successfully.'], REST_Controller::HTTP_OK);
         else $this->response(NULL, REST_Controller::HTTP_BAD_REQUEST);
     }
+
+    public function space_get($id = 0)
+    {
+        if(!empty($id)){
+            $res = $this->db->get_where("events", ['id_space' => $id])->result_array();
+            if($res) $this->response($data, REST_Controller::HTTP_OK);
+        }else{
+            $this->response(NULL, REST_Controller::HTTP_BAD_REQUEST);
+        }
+    }
 }

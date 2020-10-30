@@ -55,4 +55,8 @@ class ReservationEquipment_model extends CI_Model {
         return $res;
     }
 
+    public function delete($id) {
+        return $this->db->delete($this->table, array('id'=>$id));
+    }
+
 }

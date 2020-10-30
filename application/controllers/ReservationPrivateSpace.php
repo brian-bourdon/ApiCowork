@@ -86,33 +86,33 @@ class ReservationPrivateSpace extends REST_Controller {
             $hf = new DateTime($horaire_fin);
             $interval = $hd->diff($hf)->format("%r%h");
             $response = array();
-            
-            if(count($res) == 0) { // si dispo
-                if($hd->format("Y-m-d") == $hf->format("Y-m-d")) { // meme jour
-                    if((int)$interval >= 1) { // au moins 1h de diff
-                        if($hd->format('L') <= 4) $week_type = "horaire_semaine_";
-                        else if($hd->format('L') == 5) $week_type = "horaire_vendredi_";
-                        else $week_type = "horaire_week_end_";
-                        if($hd->format('H:i:s') >= $horaires_space[$week_type."start"] && $hf->format('H:i:s') <= $horaires_space[$week_type."end"]) { // si ouvert
-                            $response["status"] = true;
-                            $response["msg"] = "Creneau disponible";
-                        }else {
-                            $response["status"] = false;
-                            $response["msg"] = "Le ".$this->Space_model->get_space_by_id($id_space)->row_array()["nom"]." n'est pas ouvert à ces horaires !";
+            if($hd->format('L') <= 4) $week_type = "horaire_semaine_";
+            else if($hd->format('L') == 5) $week_type = "horaire_vendredi_";
+            else $week_type = "horaire_week_end_";
+            if($hd->format('H:i:s') >= $horaires_space[$week_type."start"] && $hf->format('H:i:s') <= $horaires_space[$week_type."end"]) {
+                if(count($res) == 0) { // si dispo
+                    if($hd->format("Y-m-d") == $hf->format("Y-m-d")) { // meme jour
+                        if((int)$interval >= 1) { // au moins 1h de diff
+                                $response["status"] = true;
+                                $response["msg"] = "Creneau disponible";
                         }
-                    }
-                    else {
+                        else {
+                            $response["status"] = false;
+                            $response["msg"] = "Le créneau doit être au moins d'une heure !";
+                        }
+                    } else {
                         $response["status"] = false;
-                        $response["msg"] = "Le créneau doit être au moins d'une heure !";
+                        $response["msg"] = "Il est impossible de réserver sur plusieurs jours !";
                     }
-                } else {
-                    $response["status"] = false;
-                    $response["msg"] = "Il est impossible de réserver sur plusieurs jours !";
                 }
-            }
+                else {
+                    $response["status"] = false;
+                    $response["msg"] = "L'espace n'est pas disponlible pour ces horaires !";
+                }
+            } 
             else {
                 $response["status"] = false;
-                $response["msg"] = "L'espace n'est pas disponlible pour ces horaires !";
+                $response["msg"] = "Le ".$this->Space_model->get_space_by_id($id_space)->row_array()["nom"]." n'est pas ouvert à ces horaires !";
             }
             $this->response($response, REST_Controller::HTTP_OK);
         }

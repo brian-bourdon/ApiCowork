@@ -80,9 +80,10 @@ class ReservationEvents extends REST_Controller {
         }
     }
 
-    public function isResByUser_get($id_user) {
-        if(!empty($id_user)){
+    public function isResByUser_get($id_user, $id_event) {
+        if(!empty($id_user) && !empty($id_event)){
             $this->db->where('id_user', $id_user);
+            $this->db->where('id', $id_event);
             $this->db->from('reservation_events');
             $data = $this->db->count_all_results();
             $this->response($data, REST_Controller::HTTP_OK);

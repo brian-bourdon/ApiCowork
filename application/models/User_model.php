@@ -52,6 +52,13 @@ class User_model extends CI_Model {
                         ->get();
     }
 
+    public function get_abonnement($id) {
+        return $this->db->select('*')
+                        ->from("res_abonnement")
+                        ->where('id_user', $id)
+                        ->get();
+    }
+
     public function insert_user($user) {
         $res = true;
         if(isset($user["firstname"], $user["lastname"], $user["date_naissance"], $user["email"], $user["pwd"])) {
@@ -82,7 +89,11 @@ class User_model extends CI_Model {
         if(isset($user["firstname"]) || isset($user["lastname"]) || isset($user["date_naissance"]) || isset($user["email"]) || isset($user["pwd"]) || isset($user["id_abonnement"])) {
             if(count($this->get_user_by_id($id)->result_array()) == 1) {
                 if(isset($user["id_abonnement"])) {
-                    $res &= $this->ResAbonnement_model->insert(array("id_abonnement" => $user["id_abonnement"], "id_user" => $id));
+                    $abonnement = $this->get_abonnement($user["id_abonnement"])->result_array();
+                    $now = new DateTime();
+                    $arr = array("id_abonnement" => $user["id_abonnement"], "created_at" => $now->format("Y-m-d H:i:s"));
+                    if(count($abonnement) > 0) $res &= $this->ResAbonnement_model->update($abonnement[0]["id"], $arr);
+                    else $res &= $this->ResAbonnement_model->insert(array("id_abonnement" => $user["id_abonnement"], "id_user" => $id));
                     unset($user["id_abonnement"]);
                 }
                 if(!empty($user)) $res &= $this->db->update('user', $user, array('id'=>$id));
